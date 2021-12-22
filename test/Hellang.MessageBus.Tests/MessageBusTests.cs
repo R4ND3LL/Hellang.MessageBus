@@ -162,5 +162,29 @@ namespace Hellang.MessageBus.Tests
             Assert.That(target.HandledMessageTypes.Contains(typeof(TestMessage)));
             Assert.That(target.HandledMessageTypes.Contains(typeof(DerivedTestMessage)));
         }
+      
+        [Test]
+        public void MessagesAreHandledByExplicitSubscriber() {
+            var bus = new DirectDispatchMessageBus();
+
+            var target = new ExplicitSubscriber();
+            bus.Subscribe(target);
+
+            bus.Publish<TestMessage>();
+
+            Assert.That(target.MessageHandleCount, Is.EqualTo(1));
+        }
+        [Test]
+        public void MessagesAreHandledWhenPublishedAsObjectGenericType() {
+            var bus = new DirectDispatchMessageBus();
+
+            var target = new ExplicitSubscriber();
+            bus.Subscribe(target);
+
+            bus.Publish<object>(new TestMessage());
+
+            Assert.That(target.MessageHandleCount, Is.EqualTo(1));
+        }
     }
+     
 }
